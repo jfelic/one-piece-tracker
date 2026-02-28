@@ -4,7 +4,6 @@ import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Input } from "./ui/input";
-import { ModeToggle } from "./ModeToggle";
 import { Progress } from "./ui/progress";
 
 interface Props {
@@ -43,16 +42,11 @@ export default function EpisodeTracker({ watchList, index, setIndex }: Props) {
   const arcProgress = current.arcIndex + 1;
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="flex justify-center p-4 pt-8">
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <div className="flex items-start justify-between">
-            <div>
-              <Badge className="w-fit mb-1">One Piece</Badge>
-              <CardTitle className="text-2xl">Watch Tracker</CardTitle>
-            </div>
-            <ModeToggle />
-          </div>
+          <Badge className="w-fit mb-1">One Piece</Badge>
+          <CardTitle className="text-2xl">Watch Tracker</CardTitle>
         </CardHeader>
 
         <CardContent className="flex flex-col gap-6">

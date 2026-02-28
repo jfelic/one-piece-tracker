@@ -72,3 +72,30 @@ function buildWatchList(): WatchEntry[] {
 }
 
 export const WATCH_LIST: WatchEntry[] = buildWatchList();
+
+export interface ArcGuide {
+  no: number;
+  arcs: string;
+  animeEpisodes: string;
+  numPaceEp: number;
+  pieceMinutes: number;
+  savedMinutes: number;
+  savedPercent: number;
+  resolution: string;
+  arcWatchGuide: string;
+}
+
+export const ARC_LIST: ArcGuide[] = (rawData as RawArc[])
+  .filter((row) => typeof row["No."] === "number")
+  .sort((a, b) => (a["No."] as number) - (b["No."] as number))
+  .map((row) => ({
+    no: row["No."] as number,
+    arcs: row["Arcs"] as string,
+    animeEpisodes: (row["Anime Episodes"] as string) ?? "",
+    numPaceEp: row["# of Pace Ep."] as number,
+    pieceMinutes: row["Piece Minutes"] as number,
+    savedMinutes: row["Saved Minutes"] as number,
+    savedPercent: row["Saved %"] as number,
+    resolution: (row["Resolution"] as string) ?? "",
+    arcWatchGuide: (row["Arc Watch Guide: Pace + Original"] as string) ?? "",
+  }));
