@@ -1,5 +1,11 @@
 import { useState } from "react";
 import { WatchEntry } from "../lib/parseEpisodes";
+import { Badge } from "./ui/badge";
+import { Button } from "./ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Input } from "./ui/input";
+import { ModeToggle } from "./ModeToggle";
+import { Progress } from "./ui/progress";
 
 interface Props {
   watchList: WatchEntry[];
@@ -37,104 +43,90 @@ export default function EpisodeTracker({ watchList, index, setIndex }: Props) {
   const arcProgress = current.arcIndex + 1;
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-sm rounded-2xl bg-gray-900 border border-gray-800 shadow-xl p-8 flex flex-col gap-6">
-        {/* Header */}
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-widest text-red-500 mb-1">
-            One Piece
-          </p>
-          <h1 className="text-2xl font-bold text-white">Watch Tracker</h1>
-        </div>
-
-        {/* Arc + Episode */}
-        <div className="rounded-xl bg-gray-800 p-5 flex flex-col gap-1">
-          <p className="text-xs text-gray-400 uppercase tracking-wide">Arc</p>
-          <p className="text-lg font-semibold text-white leading-tight">
-            {current.arcName}
-          </p>
-          <p className="text-4xl font-bold text-red-400 mt-2">
-            Ep {current.episode}
-          </p>
-        </div>
-
-        {/* Progress */}
-        <div className="flex flex-col gap-3">
-          <div>
-            <div className="flex justify-between text-xs text-gray-400 mb-1">
-              <span>Arc progress</span>
-              <span>
-                {arcProgress} / {current.arcTotal}
-              </span>
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <Card className="w-full max-w-sm">
+        <CardHeader>
+          <div className="flex items-start justify-between">
+            <div>
+              <Badge className="w-fit mb-1">One Piece</Badge>
+              <CardTitle className="text-2xl">Watch Tracker</CardTitle>
             </div>
-            <div className="h-1.5 rounded-full bg-gray-700 overflow-hidden">
-              <div
-                className="h-full bg-red-500 rounded-full transition-all duration-300"
-                style={{ width: `${(arcProgress / current.arcTotal) * 100}%` }}
-              />
+            <ModeToggle />
+          </div>
+        </CardHeader>
+
+        <CardContent className="flex flex-col gap-6">
+          {/* Arc + Episode */}
+          <Card>
+            <CardContent className="pt-4 flex flex-col gap-1">
+              <p className="text-xs text-muted-foreground uppercase tracking-wide">Arc</p>
+              <p className="text-lg font-semibold leading-tight">{current.arcName}</p>
+              <p className="text-4xl font-bold mt-2">Ep {current.episode}</p>
+            </CardContent>
+          </Card>
+
+          {/* Progress */}
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-1.5">
+              <div className="flex justify-between text-xs text-muted-foreground">
+                <span>Arc progress</span>
+                <span>{arcProgress} / {current.arcTotal}</span>
+              </div>
+              <Progress value={(arcProgress / current.arcTotal) * 100} />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <div className="flex justify-between text-xs text-muted-foreground">
+                <span>Overall</span>
+                <span>{watchedCount} / {total}</span>
+              </div>
+              <Progress value={(watchedCount / total) * 100} />
             </div>
           </div>
-          <div>
-            <div className="flex justify-between text-xs text-gray-400 mb-1">
-              <span>Overall</span>
-              <span>
-                {watchedCount} / {total}
-              </span>
-            </div>
-            <div className="h-1.5 rounded-full bg-gray-700 overflow-hidden">
-              <div
-                className="h-full bg-red-700 rounded-full transition-all duration-300"
-                style={{ width: `${(watchedCount / total) * 100}%` }}
-              />
-            </div>
-          </div>
-        </div>
 
-        {/* Prev / Next */}
-        <div className="flex gap-3">
-          <button
-            onClick={handlePrev}
-            disabled={index === 0}
-            className="flex-1 rounded-xl border border-gray-700 py-3 text-sm font-medium text-gray-300 transition-colors hover:bg-gray-800 disabled:opacity-30 disabled:cursor-not-allowed"
-          >
-            ← Prev
-          </button>
-          <button
-            onClick={handleNext}
-            disabled={index === total - 1}
-            className="flex-1 rounded-xl bg-red-600 py-3 text-sm font-semibold text-white transition-colors hover:bg-red-500 disabled:opacity-30 disabled:cursor-not-allowed"
-          >
-            Next →
-          </button>
-        </div>
-
-        {/* Jump to episode */}
-        <div className="flex flex-col gap-2">
-          <div className="flex gap-2">
-            <input
-              type="number"
-              min={1}
-              value={jumpValue}
-              onChange={(e) => {
-                setJumpValue(e.target.value);
-                setJumpError("");
-              }}
-              onKeyDown={(e) => e.key === "Enter" && handleJump()}
-              placeholder="Jump to episode…"
-              className="flex-1 rounded-xl bg-gray-800 border border-gray-700 px-4 py-2.5 text-sm text-white placeholder-gray-500 outline-none focus:border-red-500 transition-colors [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-            />
-            <button
-              onClick={handleJump}
-              className="rounded-xl bg-gray-700 px-4 py-2.5 text-sm font-medium text-white hover:bg-gray-600 transition-colors"
+          {/* Prev / Next */}
+          <div className="flex gap-3">
+            <Button
+              variant="outline"
+              className="flex-1"
+              onClick={handlePrev}
+              disabled={index === 0}
             >
-              Go
-            </button>
+              ← Prev
+            </Button>
+            <Button
+              className="flex-1"
+              onClick={handleNext}
+              disabled={index === total - 1}
+            >
+              Next →
+            </Button>
           </div>
-          {jumpError && (
-            <p className="text-xs text-red-400">{jumpError}</p>
-          )}
-        </div>
-      </div>
+
+          {/* Jump to episode */}
+          <div className="flex flex-col gap-2">
+            <div className="flex gap-2">
+              <Input
+                type="number"
+                min={1}
+                value={jumpValue}
+                onChange={(e) => {
+                  setJumpValue(e.target.value);
+                  setJumpError("");
+                }}
+                onKeyDown={(e) => e.key === "Enter" && handleJump()}
+                placeholder="Jump to episode…"
+                className="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+              />
+              <Button variant="secondary" onClick={handleJump}>
+                Go
+              </Button>
+            </div>
+            {jumpError && (
+              <p className="text-xs text-destructive">{jumpError}</p>
+            )}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
