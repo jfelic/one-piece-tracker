@@ -42,8 +42,8 @@ export default function EpisodeTracker({ watchList, index, setIndex }: Props) {
   const arcProgress = current.arcIndex + 1;
 
   return (
-    <div className="flex justify-center p-4 pt-8">
-      <Card className="w-full max-w-sm">
+    <div className="p-4 pt-8 w-full">
+      <Card className="w-80 mx-auto">
         <CardHeader>
           <Badge className="w-fit mb-1">One Piece</Badge>
           <CardTitle className="text-2xl">Watch Tracker</CardTitle>

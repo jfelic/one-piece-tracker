@@ -1,10 +1,6 @@
-import { useState } from "react";
 import { ArcGuide as ArcGuideType, WatchEntry } from "../lib/parseEpisodes";
 import { Badge } from "./ui/badge";
-import { Button } from "./ui/button";
 import { Progress } from "./ui/progress";
-
-const PAGE_SIZE = 10;
 
 interface Props {
   arcs: ArcGuideType[];
@@ -36,10 +32,6 @@ export default function ArcGuide({ arcs, watchList, index, setIndex }: Props) {
   const currentArcIndex = arcs.findIndex((a) => a.no === currentArcNo);
   const currentArc = arcs[currentArcIndex];
 
-  const totalPages = Math.ceil(totalArcs / PAGE_SIZE);
-  const [page, setPage] = useState(() => Math.floor(currentArcIndex / PAGE_SIZE));
-  const pageArcs = arcs.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
-
   /** Find the index in watchList of the last episode belonging to an arc */
   function lastIndexOfArc(arcNo: number): number {
     let last = -1;
@@ -56,7 +48,7 @@ export default function ArcGuide({ arcs, watchList, index, setIndex }: Props) {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="flex flex-col">
       <main className="max-w-6xl mx-auto px-4 py-6 w-full flex flex-col gap-6">
         {/* Progress summary */}
         <div className="flex flex-col gap-2">
@@ -83,12 +75,10 @@ export default function ArcGuide({ arcs, watchList, index, setIndex }: Props) {
                 <th className="px-3 py-2 text-right font-medium whitespace-nowrap">Pace Eps</th>
                 <th className="px-3 py-2 text-right font-medium whitespace-nowrap">Saved</th>
                 <th className="px-3 py-2 text-right font-medium whitespace-nowrap">Saved %</th>
-                <th className="px-3 py-2 text-center font-medium">Res.</th>
-                <th className="px-3 py-2 text-left font-medium">Guide</th>
               </tr>
             </thead>
             <tbody>
-              {pageArcs.map((arc) => {
+              {arcs.map((arc) => {
                 const isCurrent = arc.no === currentArcNo;
                 const isCompleted = lastIndexOfArc(arc.no) < index && !isCurrent;
                 const [cleanName, tag] = parseArcName(arc.arcs);
@@ -126,51 +116,11 @@ export default function ArcGuide({ arcs, watchList, index, setIndex }: Props) {
                     <td className="px-3 py-2.5 text-right text-muted-foreground tabular-nums">
                       {formatPercent(arc.savedPercent)}
                     </td>
-                    <td className="px-3 py-2.5 text-center">
-                      <Badge
-                        variant={
-                          arc.resolution === "1080p"
-                            ? "default"
-                            : arc.resolution === "720p"
-                            ? "secondary"
-                            : "outline"
-                        }
-                        className="text-[10px]"
-                      >
-                        {arc.resolution}
-                      </Badge>
-                    </td>
-                    <td className="px-3 py-2.5 text-muted-foreground text-xs max-w-[180px]">
-                      <span className="line-clamp-2">{arc.arcWatchGuide}</span>
-                    </td>
                   </tr>
                 );
               })}
             </tbody>
           </table>
-        </div>
-
-        {/* Pagination */}
-        <div className="flex items-center justify-between text-sm">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setPage((p) => p - 1)}
-            disabled={page === 0}
-          >
-            ← Prev
-          </Button>
-          <span className="text-muted-foreground">
-            Page {page + 1} of {totalPages}
-          </span>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setPage((p) => p + 1)}
-            disabled={page === totalPages - 1}
-          >
-            Next →
-          </Button>
         </div>
       </main>
     </div>
